@@ -3,6 +3,7 @@
 #include "camera_setup.h"
 #include "config.h"
 #include "led_blinker.h"
+#include "motor_driver.h"
 #include "web_server.h"
 #include "wifi_setup.h"
 
@@ -31,6 +32,7 @@ void setup() {
 
   logBootInfo();
   setupLedBlinker();
+  setupMotorDriver();
   setupWifi();
   setupCamera();
   setupWebServer();
@@ -38,6 +40,7 @@ void setup() {
 
 void loop() {
   handleLedBlinker();
+  handleMotorDriver();
   handleWifi();
   handleWebServer();
 }

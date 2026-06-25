@@ -48,6 +48,22 @@ bool setupCamera() {
     return false;
   }
 
+#ifdef FRONT_ESP
+  sensor_t *sensor = esp_camera_sensor_get();
+  if (sensor == nullptr) {
+    Serial.println("Front camera orientation not changed: sensor unavailable");
+    return true;
+  }
+
+  int vflipResult = sensor->set_vflip(sensor, 1);
+  int hmirrorResult = sensor->set_hmirror(sensor, 1);
+  if (vflipResult != 0 || hmirrorResult != 0) {
+    Serial.printf("Front camera orientation change failed: vflip=%d hmirror=%d\n", vflipResult, hmirrorResult);
+  } else {
+    Serial.println("Front camera orientation rotated 180 degrees");
+  }
+#endif
+
   Serial.println("Camera init successful");
   return true;
 }
