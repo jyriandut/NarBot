@@ -2,7 +2,11 @@
 
 #include "camera_setup.h"
 #include "config.h"
+#include "color_sensor.h"
+#include "distance_sensor.h"
 #include "led_blinker.h"
+#include "motor_driver.h"
+#include "obstacle_safety.h"
 #include "web_server.h"
 #include "wifi_setup.h"
 
@@ -31,13 +35,21 @@ void setup() {
 
   logBootInfo();
   setupLedBlinker();
+  setupMotorDriver();
   setupWifi();
   setupCamera();
+  setupColorSensor();
+  setupDistanceSensor();
+  setupObstacleSafety();
   setupWebServer();
 }
 
 void loop() {
-  handleLedBlinker();
-  handleWifi();
   handleWebServer();
+  handleLedBlinker();
+  handleMotorDriver();
+  handleColorSensor();
+  handleDistanceSensor();
+  handleObstacleSafety();
+  handleWifi();
 }
