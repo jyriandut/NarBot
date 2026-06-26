@@ -4,16 +4,19 @@
 #include <WiFi.h>
 
 #include "config.h"
+#include "led_blinker.h"
 
 namespace {
 
 #ifdef FRONT_ESP
 unsigned long lastReconnectAttempt = 0;
 constexpr unsigned long reconnectIntervalMs = 5000;
+wl_status_t lastWifiStatus = WL_IDLE_STATUS;
 
 void startFrontWifiConnection() {
   Serial.print("Connecting to Wi-Fi AP: ");
   Serial.println(WIFI_SSID);
+  setLedBlinking();
   WiFi.disconnect(false);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }
@@ -62,12 +65,16 @@ bool setupWifi() {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("Wi-Fi connection failed; will keep retrying");
     lastReconnectAttempt = millis();
+    lastWifiStatus = WiFi.status();
+    setLedBlinking();
     return false;
   }
 
   Serial.println("Wi-Fi connected");
   Serial.print("Assigned IP address: ");
   Serial.println(WiFi.localIP());
+  lastWifiStatus = WL_CONNECTED;
+  setLedSolid(true);
   return true;
 #else
 #error "Define MAIN_ESP or FRONT_ESP in platformio.ini"
@@ -76,6 +83,20 @@ bool setupWifi() {
 
 void handleWifi() {
 #ifdef FRONT_ESP
+  wl_status_t currentStatus = WiFi.status();
+  if (currentStatus != lastWifiStatus) {
+    lastWifiStatus = currentStatus;
+    if (currentStatus == WL_CONNECTED) {
+      Serial.println("Wi-Fi connected");
+      Serial.print("Assigned IP address: ");
+      Serial.println(WiFi.localIP());
+      setLedSolid(true);
+    } else {
+      Serial.println("Wi-Fi disconnected");
+      setLedBlinking();
+    }
+  }
+
   if (WiFi.status() == WL_CONNECTED) {
     return;
   }

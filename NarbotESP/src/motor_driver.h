@@ -13,6 +13,7 @@ struct MotorDriverState {
   MotorDirection rightDirection;
   int leftPwm;
   int rightPwm;
+  int targetSpeed;
 };
 
 void setupMotorDriver();
@@ -23,6 +24,7 @@ void driveForward();
 void driveBackward();
 void turnLeft();
 void turnRight();
+void setMotorTargetSpeed(int speed);
 
 MotorDriverState getMotorDriverState();
 const char *motorDirectionName(MotorDirection direction);

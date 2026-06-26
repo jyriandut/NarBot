@@ -17,7 +17,7 @@ The same codebase builds in two modes:
 - `main_esp`: starts the `SMARS_MAIN` access point at `192.168.4.1`, serves the
   dashboard, and streams its local camera.
 - `front_esp`: joins `SMARS_MAIN` as a station, tries to use static IP
-  `192.168.4.2`, and serves its own camera stream.
+  `192.168.4.10`, and serves its own camera stream.
 
 Main endpoints:
 
@@ -132,5 +132,5 @@ The main firmware milestone is:
 1. Main ESP starts the `SMARS_MAIN` access point.
 2. Main dashboard opens at `http://192.168.4.1/`.
 3. Main ESP camera stream is visible.
-4. Front ESP connects to the main AP at `192.168.4.2`.
+4. Front ESP connects to the main AP at `192.168.4.10`.
 5. Front ESP stream appears in the main dashboard.

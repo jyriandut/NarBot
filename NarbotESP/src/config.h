@@ -9,7 +9,7 @@ constexpr const char *WIFI_SSID = "SMARS_MAIN";
 constexpr const char *WIFI_PASSWORD = "smars1234";
 
 const IPAddress MAIN_AP_IP(192, 168, 4, 1);
-const IPAddress FRONT_STATIC_IP(192, 168, 4, 2);
+const IPAddress FRONT_STATIC_IP(192, 168, 4, 10);
 const IPAddress WIFI_GATEWAY(192, 168, 4, 1);
 const IPAddress WIFI_SUBNET(255, 255, 255, 0);
 

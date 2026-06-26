@@ -2,6 +2,8 @@
 
 #include <Arduino.h>
 
+#include "obstacle_safety.h"
+
 namespace {
 
 #ifdef MAIN_ESP
@@ -15,37 +17,69 @@ constexpr int LEFT_PWM_CHANNEL = 2;
 constexpr int RIGHT_PWM_CHANNEL = 3;
 constexpr int MOTOR_PWM_FREQ = 20000;
 constexpr int MOTOR_PWM_RESOLUTION = 8;
-constexpr int MOTOR_SPEED = 220;
+constexpr int DEFAULT_MOTOR_SPEED = 180;
+constexpr int MAX_MOTOR_SPEED = 255;
+constexpr int MOTOR_RAMP_STEP = 12;
+constexpr unsigned long MOTOR_RAMP_INTERVAL_MS = 30;
 #else
-constexpr int MOTOR_SPEED = 0;
+constexpr int DEFAULT_MOTOR_SPEED = 0;
+constexpr int MAX_MOTOR_SPEED = 0;
 #endif
 
 MotorDirection leftDirection = MotorDirection::Stopped;
 MotorDirection rightDirection = MotorDirection::Stopped;
 int leftPwm = 0;
 int rightPwm = 0;
+int leftTargetPwm = 0;
+int rightTargetPwm = 0;
+int targetSpeed = DEFAULT_MOTOR_SPEED;
+unsigned long lastRampAt = 0;
 
 #ifdef MAIN_ESP
 void writeMotor(int dirPin, int pwmChannel, MotorDirection direction, int speed) {
   digitalWrite(dirPin, direction == MotorDirection::Backward ? HIGH : LOW);
   ledcWrite(pwmChannel, speed);
 }
+
+int stepToward(int value, int target) {
+  if (value < target) {
+    return min(value + MOTOR_RAMP_STEP, target);
+  }
+
+  if (value > target) {
+    return max(value - MOTOR_RAMP_STEP, target);
+  }
+
+  return value;
+}
 #endif
 
 void setMotorState(MotorDirection newLeftDirection, MotorDirection newRightDirection) {
+  bool leftDirectionChanged = leftDirection != newLeftDirection;
+  bool rightDirectionChanged = rightDirection != newRightDirection;
+
   leftDirection = newLeftDirection;
   rightDirection = newRightDirection;
-  leftPwm = leftDirection == MotorDirection::Stopped ? 0 : MOTOR_SPEED;
-  rightPwm = rightDirection == MotorDirection::Stopped ? 0 : MOTOR_SPEED;
+  leftTargetPwm = leftDirection == MotorDirection::Stopped ? 0 : targetSpeed;
+  rightTargetPwm = rightDirection == MotorDirection::Stopped ? 0 : targetSpeed;
+
+  if (leftDirection == MotorDirection::Stopped || leftDirectionChanged) {
+    leftPwm = 0;
+  }
+
+  if (rightDirection == MotorDirection::Stopped || rightDirectionChanged) {
+    rightPwm = 0;
+  }
 
 #ifdef MAIN_ESP
   writeMotor(LEFT_DIR_PIN, LEFT_PWM_CHANNEL, leftDirection, leftPwm);
   writeMotor(RIGHT_DIR_PIN, RIGHT_PWM_CHANNEL, rightDirection, rightPwm);
-  Serial.printf("Motor state: left=%s pwm=%d right=%s pwm=%d\n",
+  Serial.printf("Motor target: left=%s pwm=%d right=%s pwm=%d speed=%d\n",
                 motorDirectionName(leftDirection),
-                leftPwm,
+                leftTargetPwm,
                 motorDirectionName(rightDirection),
-                rightPwm);
+                rightTargetPwm,
+                targetSpeed);
 #endif
 }
 
@@ -81,6 +115,24 @@ void setupMotorDriver() {
 }
 
 void handleMotorDriver() {
+#ifdef MAIN_ESP
+  if (millis() - lastRampAt < MOTOR_RAMP_INTERVAL_MS) {
+    return;
+  }
+
+  lastRampAt = millis();
+  int nextLeftPwm = stepToward(leftPwm, leftTargetPwm);
+  int nextRightPwm = stepToward(rightPwm, rightTargetPwm);
+
+  if (nextLeftPwm == leftPwm && nextRightPwm == rightPwm) {
+    return;
+  }
+
+  leftPwm = nextLeftPwm;
+  rightPwm = nextRightPwm;
+  writeMotor(LEFT_DIR_PIN, LEFT_PWM_CHANNEL, leftDirection, leftPwm);
+  writeMotor(RIGHT_DIR_PIN, RIGHT_PWM_CHANNEL, rightDirection, rightPwm);
+#endif
 }
 
 void stopMotors() {
@@ -88,6 +140,12 @@ void stopMotors() {
 }
 
 void driveForward() {
+  if (isForwardBlocked()) {
+    Serial.println("Forward blocked by obstacle safety");
+    stopMotors();
+    return;
+  }
+
   setMotorState(MotorDirection::Forward, MotorDirection::Forward);
 }
 
@@ -103,8 +161,18 @@ void turnRight() {
   setMotorState(MotorDirection::Forward, MotorDirection::Backward);
 }
 
+void setMotorTargetSpeed(int speed) {
+  targetSpeed = constrain(speed, 0, MAX_MOTOR_SPEED);
+  leftTargetPwm = leftDirection == MotorDirection::Stopped ? 0 : targetSpeed;
+  rightTargetPwm = rightDirection == MotorDirection::Stopped ? 0 : targetSpeed;
+
+#ifdef MAIN_ESP
+  Serial.printf("Motor speed target set to %d\n", targetSpeed);
+#endif
+}
+
 MotorDriverState getMotorDriverState() {
-  return {leftDirection, rightDirection, leftPwm, rightPwm};
+  return {leftDirection, rightDirection, leftPwm, rightPwm, targetSpeed};
 }
 
 const char *motorDirectionName(MotorDirection direction) {
