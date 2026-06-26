@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumo Robot Control</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<main class="page-shell">
+    <section class="hero-card">
+        <div>
+            <p class="eyebrow">Milestone 2 phone server</p>
+            <h1>Sumo Robot Control</h1>
+            <p class="subtitle">Browser -&gt; Flask server on phone -&gt; ESP32 -&gt; motor</p>
+        </div>
+        <div class="status-pill">AP {{ phone_ap_ip }}</div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Camera stream</h2>
+                <p class="section-copy">Live view from the phone-side stream endpoint.</p>
+            </div>
+            <p class="camera-url">{{ camera_stream_url }}</p>
+        </div>
+        <div class="camera-frame">
+            <img id="camera-stream" src="{{ camera_stream_url }}" alt="Camera stream">
+            <p id="camera-fallback" class="camera-fallback" hidden>
+                Camera stream could not be loaded. Control buttons remain available.
+            </p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="status-grid">
+            <article class="status-card">
+                <span class="label">Connection status</span>
+                <strong id="connection-status">{{ connection_status }}</strong>
+            </article>
+            <article class="status-card">
+                <span class="label">Last command</span>
+                <strong id="last-command">{{ last_command }}</strong>
+            </article>
+            <article class="status-card">
+                <label class="label" for="speed">Speed (0-255)</label>
+                <input id="speed" type="number" min="0" max="255" step="1" value="{{ last_speed }}">
+            </article>
+        </div>
+        <p id="error-message" class="error-message" hidden></p>
+    </section>
+
+    <section class="panel">
+        <div class="control-grid">
+            <button class="control-button forward" data-command="FORWARD" type="button">Forward</button>
+            <button class="control-button left" data-command="LEFT" type="button">Left</button>
+            <button class="control-button stop" data-command="STOP" type="button">Stop</button>
+            <button class="control-button right" data-command="RIGHT" type="button">Right</button>
+            <button class="control-button backward" data-command="BACKWARD" type="button">Backward</button>
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='js/controls.js') }}" defer></script>
+</body>
+</html>
