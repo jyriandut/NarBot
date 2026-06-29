@@ -1,0 +1,58 @@
+(kicad_mod TB6612FNG1_2x06_SMD_2.54mm
+  (version 20211014)
+  (generator user)
+
+  (general
+    (description "2x6 SMD pads, 2.54mm pitch, 15.24mm row spacing, pads on F.Cu & B.Cu; socket 3D models")
+    (keywords "TB6612FNG1 2x6 socket SMD")
+  )
+
+  (footprint "TB6612FNG1_2x06_SMD_2.54mm")
+  (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask F.Silk F.Fab B.Silk B.Fab Edge.Cuts)
+
+  (fp_text reference REF** (at 0 -14.5) (layer F.Silk)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+
+  (fp_text value TB6612FNG1_2x06_SMD_2.54mm (at 0 14.5) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+
+  (pad 1 smd rect (at 0.00 0.00) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 2 smd rect (at 0.00 -2.54) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 3 smd rect (at 0.00 -5.08) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 4 smd rect (at 0.00 -7.62) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 5 smd rect (at 0.00 -10.16) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 6 smd rect (at 0.00 -12.70) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+
+  (pad 7 smd rect (at 15.24 0.00) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 8 smd rect (at 15.24 -2.54) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 9 smd rect (at 15.24 -5.08) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 10 smd rect (at 15.24 -7.62) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 11 smd rect (at 15.24 -10.16) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+  (pad 12 smd rect (at 15.24 -12.70) (size 1.8 1.2) (layers F.Cu F.Paste F.Mask B.Cu B.Paste B.Mask) (net 0))
+
+  (fp_circle (center -0.6 0.0) (end -0.2 0.0) (layer F.Silk) (width 0.15))
+
+  (fp_line (start -1.0 2.0) (end 16.24 2.0) (layer F.Silk) (width 0.15))
+  (fp_line (start 16.24 2.0) (end 16.24 -15.5) (layer F.Silk) (width 0.15))
+  (fp_line (start 16.24 -15.5) (end -1.0 -15.5) (layer F.Silk) (width 0.15))
+  (fp_line (start -1.0 -15.5) (end -1.0 2.0) (layer F.Silk) (width 0.15))
+
+  (fp_line (start -1.25 2.25) (end 16.49 2.25) (layer F.Fab) (width 0.05))
+  (fp_line (start 16.49 2.25) (end 16.49 -15.75) (layer F.Fab) (width 0.05))
+  (fp_line (start 16.49 -15.75) (end -1.25 -15.75) (layer F.Fab) (width 0.05))
+  (fp_line (start -1.25 -15.75) (end -1.25 2.25) (layer F.Fab) (width 0.05))
+
+  (model ${KICAD6_3DMODEL_DIR}/PinSocket_1x06_2.54mm.STEP
+    (at 0 0 0)
+    (scale 1 1 1)
+    (rotate 0 0 0)
+  )
+
+  (model ${KICAD6_3DMODEL_DIR}/PinSocket_1x06_2.54mm.STEP
+    (at 15.24 0 0)
+    (scale 1 1 1)
+    (rotate 0 0 0)
+  )
+)
